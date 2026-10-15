@@ -1,0 +1,65 @@
+@startuml
+!pragma layout smetana
+title Multi-Channel Notification Gateway - Bridge Pattern
+
+interface MessageSender {
+    +sendMessage(recipient: String, title: String, body: String): boolean
+    +isAvailable(): boolean
+    +getChannelName(): String
+}
+
+abstract class Notification {
+    #sender: MessageSender
+    #Notification(sender: MessageSender)
+    +setSender(sender: MessageSender): void
+    {abstract} +send(recipient: String, message: String): void
+}
+
+class TelegramMessageSender
+class EmailMessageSender
+class SmsMessageSender
+class KafkaEventSender
+class PushNotificationSender
+
+class UrgentNotification {
+    -fallbackSender: MessageSender
+}
+
+class EncryptedNotification
+class ScheduledBatchNotification {
+    -recipients: List<String>
+    +addRecipient(recipient: String): void
+}
+class MarketingNotification
+
+Notification <|-- UrgentNotification
+Notification <|-- EncryptedNotification
+Notification <|-- ScheduledBatchNotification
+Notification <|-- MarketingNotification
+
+MessageSender <|.. TelegramMessageSender
+MessageSender <|.. EmailMessageSender
+MessageSender <|.. SmsMessageSender
+MessageSender <|.. KafkaEventSender
+MessageSender <|.. PushNotificationSender
+
+Notification o--> MessageSender : Bridge (has-a)
+UrgentNotification --> MessageSender : fallback
+
+note right of Notification
+  Abstraction
+end note
+
+note right of MessageSender
+  Implementor
+end note
+
+note bottom of MarketingNotification
+  Refined Abstraction
+end note
+
+note bottom of PushNotificationSender
+  Concrete Implementor
+end note
+
+@enduml

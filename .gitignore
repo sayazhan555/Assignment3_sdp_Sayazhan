@@ -1,0 +1,16 @@
+
+# Maven build files
+target/
+
+# macOS
+.DS_Store
+
+# VS Code settings
+.vscode/
+
+# IntelliJ files
+.idea/
+*.iml
+
+# Log files
+*.log
